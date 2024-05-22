@@ -19,7 +19,9 @@ set(SOURCE_FILES Main MeshPoint Point3D TriMesh Octant OctreeEdge EdgeInfo
         Visitors/Visitor Visitors/SplitVisitor Visitors/EdgeVisitor 
 	Visitors/IntersectionsVisitor Visitors/OneIrregularVisitor
         Visitors/TransitionPatternVisitor Visitors/SurfaceTemplatesVisitor
-        Visitors/RemoveSubElementsVisitor)
+        Visitors/RemoveSubElementsVisitor 
+        Jens/Element Jens/Hexahedron Jens/Prism Jens/Pyramid Jens/Tetrahedron Jens/Quality
+        )
 
 
 add_executable(mesher_roi ${SOURCE_FILES})

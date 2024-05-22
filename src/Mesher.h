@@ -1,18 +1,18 @@
 /*
  <Mix-mesher: region type. This program generates a mixed-elements mesh>
- 
+
  Copyright (C) <2013,2017>  <Claudio Lobos>
- 
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/gpl.txt>
  */
@@ -44,109 +44,100 @@
 #include <string.h>
 #include <memory>
 
-using std::vector;
+using Clobscode::OctreeEdge;
+using Clobscode::RefinementRegion;
+using Clobscode::TriMesh;
 using std::list;
 using std::set;
-using Clobscode::OctreeEdge;
-using Clobscode::TriMesh;
-using Clobscode::RefinementRegion;
+using std::vector;
 
 namespace Clobscode
 {
-	
-	class Mesher{
-		
-	public:
-		
-		Mesher();
-		
-		virtual ~Mesher();
-				
-		virtual FEMesh generateMesh(TriMesh &input, const unsigned short &rl,
+
+    class Mesher
+    {
+
+    public:
+        Mesher();
+
+        virtual ~Mesher();
+
+        virtual FEMesh generateMesh(TriMesh &input, const unsigned short &rl,
                                     const string &name, list<RefinementRegion *> &all_reg);
-		
+
         virtual FEMesh refineMesh(TriMesh &input, const unsigned short &rl,
                                   const string &name, list<unsigned int> &roctli,
                                   list<RefinementRegion *> &all_reg,
                                   GeometricTransform &gt, const unsigned short &minrl,
                                   const unsigned short &omaxrl);
 
-        
         virtual void setInitialState(vector<MeshPoint> &epts, vector<Octant> &eocts,
                                      map<OctreeEdge, EdgeInfo> &edge_map);
-        
-	protected:
-        
+
+    protected:
         virtual void splitOctants(const unsigned short &rl, TriMesh &input,
                                   list<unsigned int> &roctli,
                                   list<RefinementRegion *> &all_reg, const string &name,
                                   const unsigned short &minrl, const unsigned short &omaxrl);
-		
-		virtual void generateOctreeMesh(const unsigned short &rl, TriMesh &input,
+
+        virtual void generateOctreeMesh(const unsigned short &rl, TriMesh &input,
                                         list<RefinementRegion *> &all_reg, const string &name,
                                         const unsigned short &minrl,
-                                        const unsigned short &givenmaxrl=0);
+                                        const unsigned short &givenmaxrl = 0);
 
-		virtual bool isItIn(TriMesh &mesh, list<unsigned int> &faces, vector<Point3D> &coords);
+        virtual bool isItIn(TriMesh &mesh, list<unsigned int> &faces, vector<Point3D> &coords);
 
-		virtual bool rotateGridMesh(TriMesh &input,
-									list<RefinementRegion *> &all_reg,
-									GeometricTransform &gt);
-		
-		/*virtual void generateGridFromOctree(const unsigned short &rl, 
+        virtual bool rotateGridMesh(TriMesh &input,
+                                    list<RefinementRegion *> &all_reg,
+                                    GeometricTransform &gt);
+
+        /*virtual void generateGridFromOctree(const unsigned short &rl,
                                               TriMesh &input,
                                               const string &name);*/
-		
-		virtual void generateGridMesh(TriMesh &input);
-		
-		virtual void linkElementsToNodes();
 
-		virtual void detectInsideNodes(TriMesh &input);
+        virtual void generateGridMesh(TriMesh &input);
 
-		virtual void removeOnSurface();
-		
-		virtual void applySurfacePatterns(TriMesh &input);
+        virtual void linkElementsToNodes();
 
-		virtual void shrinkToBoundary(TriMesh &input);
+        virtual void detectInsideNodes(TriMesh &input);
 
-		virtual unsigned int saveOutputMesh(FEMesh &mesh);
-        
+        virtual void removeOnSurface();
+
+        virtual void applySurfacePatterns(TriMesh &input);
+
+        virtual void shrinkToBoundary(TriMesh &input);
+
+        virtual unsigned int saveOutputMesh(FEMesh &mesh);
+
         virtual unsigned int saveOutputMesh(const shared_ptr<FEMesh> &mesh);
-		
-		virtual unsigned int saveOutputMesh(FEMesh &mesh, vector<MeshPoint> &points,
+
+        virtual unsigned int saveOutputMesh(FEMesh &mesh, vector<MeshPoint> &points,
                                             list<Octant> &elements);
-        
+
         virtual unsigned int saveOutputMesh(const shared_ptr<FEMesh> &mesh,
                                             vector<MeshPoint> &tmp_points,
                                             list<Octant> &tmp_octants, vector<Octant> &rest_octs);
-        
+
         virtual unsigned int saveOutputMesh(const shared_ptr<FEMesh> &mesh,
                                             vector<MeshPoint> &tmp_points,
                                             list<Octant> &tmp_octants, list<Octant> &rest_octs);
-        
+
         virtual void projectCloseToBoundaryNodes(TriMesh &input);
 
-
-		
-	protected:
-		
-		vector<MeshPoint> points;
-		vector<Octant> octants;
-		map<OctreeEdge, EdgeInfo> MapEdges;
-		list<RefinementRegion *> regions;
+    protected:
+        vector<MeshPoint> points;
+        vector<Octant> octants;
+        map<OctreeEdge, EdgeInfo> MapEdges;
+        list<RefinementRegion *> regions;
         list<unsigned int> deb;
+    };
 
-
-
-	};
-    
     /*inline void Mesher::setInitialState(vector<MeshPoint> &epts, vector<Octant> &eocts,
                                         map<OctreeEdge, EdgeInfo> &edge_map) {
         octants = eocts;
         points = epts;
         MapEdges = edge_map;
     }*/
-	
-	
+
 }
 #endif

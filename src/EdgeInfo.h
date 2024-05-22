@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/lgpl.txt>
 */
 /**
-* @file EdgeInfo.h
-* @author Claudio Lobos, Fabrice Jaillet
-* @version 0.1
-* @brief
-**/
+ * @file EdgeInfo.h
+ * @author Claudio Lobos, Fabrice Jaillet
+ * @version 0.1
+ * @brief
+ **/
 
 #ifndef EdgeInfo_h
 #define EdgeInfo_h 1
@@ -31,61 +31,62 @@ along with this program.  If not, see <http://www.gnu.org/licenses/lgpl.txt>
 #include <set>
 #include <limits>
 
-using std::vector;
-using std::ostream;
-using std::set;
-using std::cout;
 using std::cerr;
+using std::cout;
+using std::ostream;
 using std::pair;
+using std::set;
+using std::vector;
 
 namespace Clobscode
 {
-	
-	class EdgeInfo{
-		
-	public:
-        
-		EdgeInfo();
-        
+
+    class EdgeInfo
+    {
+
+    public:
+        EdgeInfo();
+
         EdgeInfo(const vector<unsigned int> &info);
-		
+
         EdgeInfo(const unsigned int &mid_idx, const unsigned int &q1, const unsigned int &q2,
                  const unsigned int &q3, const unsigned int &q4);
-        
+
         EdgeInfo(const unsigned int &pos, const unsigned int &value);
-        
-		virtual ~EdgeInfo();
-        
+
+        virtual ~EdgeInfo();
+
         virtual void update(const unsigned int &pos, const unsigned int &value);
-        
+
         virtual vector<unsigned int> &getNeighborOcts();
-		
+
         virtual unsigned int operator[](const unsigned int &pos) const;
-        
+
         virtual unsigned int &operator[](const unsigned int &pos);
 
-		friend ostream& operator<<(ostream& o, const EdgeInfo &e);
-		
-		
-	protected:
-		
+        friend ostream &operator<<(ostream &o, const EdgeInfo &e);
+
+    protected:
         vector<unsigned int> info;
+    };
 
-	};
-
-    inline void EdgeInfo::update(const unsigned int &pos, const unsigned int &value) {
+    inline void EdgeInfo::update(const unsigned int &pos, const unsigned int &value)
+    {
         info[pos] = value;
     }
-    
-    inline unsigned int EdgeInfo::operator[](const unsigned int &pos) const{
+
+    inline unsigned int EdgeInfo::operator[](const unsigned int &pos) const
+    {
         return info[pos];
     }
-	
-    inline unsigned int &EdgeInfo::operator[](const unsigned int &pos){
+
+    inline unsigned int &EdgeInfo::operator[](const unsigned int &pos)
+    {
         return info[pos];
     }
-    
-    inline vector<unsigned int> &EdgeInfo::getNeighborOcts() {
+
+    inline vector<unsigned int> &EdgeInfo::getNeighborOcts()
+    {
         return info;
     }
 }

@@ -37,6 +37,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include "JensTransform/JensTransformer.h"
 
 using Clobscode::MeshPoint;
 using Clobscode::Octant;
@@ -1192,6 +1193,88 @@ namespace Clobscode
             }
 
             return faces;
+        }
+
+        static bool WriteOctToRefine(std::string name, set<unsigned int> &octs)
+        {
+            if (octs.empty())
+            {
+                std::cout << "no output octants to refine\n";
+                return false;
+            }
+
+            string vol_name = name + ".ref";
+
+            // write the volume mesh
+            FILE *f = fopen(vol_name.c_str(), "wt");
+
+            // write points
+            for (unsigned int i : octs)
+            {
+                fprintf(f, "%u\n", i);
+            }
+
+            fclose(f);
+            return true;
+        }
+
+        static bool WritePointsOctToRefine(std::string name, map<unsigned int, set<unsigned int>> &pointsToOctants)
+        {
+            if (pointsToOctants.empty())
+            {
+                std::cout << "no output octants to refine\n";
+                return false;
+            }
+
+            string vol_name = name + ".map";
+
+            // write the volume mesh
+            FILE *f = fopen(vol_name.c_str(), "wt");
+
+            // // write points
+            // for (unsigned int i : pointsToOctants)
+            // {
+            //     fprintf(f, "%u\n", i);
+            // }
+
+            // show content:
+            for (std::map<unsigned int, set<unsigned int>>::iterator it = pointsToOctants.begin(); it != pointsToOctants.end(); ++it)
+            {
+                fprintf(f, "%u : ", it->first); // point
+                for (unsigned int i : it->second)
+                {
+                    fprintf(f, "%u ", i); // octants
+                }
+                fprintf(f, "\n");
+            }
+            fclose(f);
+            return true;
+        }
+
+        static bool WriteHistogram(std::string name, vector<int> &histo)
+        {
+            if (histo.empty())
+            {
+                std::cout << "no output octants to refine\n";
+                return false;
+            }
+
+            string vol_name = name + ".histo";
+
+            // write the volume mesh
+            FILE *f = fopen(vol_name.c_str(), "wt");
+
+            fprintf(f, "neg %u\n", histo[0]);
+            fprintf(f, "%f %u\n", 0.03, histo[1]);
+            float step = 0.05;
+            for (int i = 2; i < 22; i++)
+            {
+                fprintf(f, "%f %u\n", step, histo[i]);
+                step += 0.05;
+            }
+
+            fclose(f);
+            return true;
         }
     };
 }

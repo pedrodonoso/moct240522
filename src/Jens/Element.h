@@ -68,6 +68,7 @@ public:
     virtual char getCharType();
 
     friend std::ostream &operator<<(std::ostream &o, Element &e);
+    unsigned int octant_id;
 
 protected:
     virtual vector<unsigned int> getTetra(int index) = 0;

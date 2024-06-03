@@ -203,17 +203,95 @@ void Quality::execute_JS(vector<Point3D> &p, vector<Element *> &e)
     }
 }
 
-//--------------------------------------------------------------------------
-//--------------------------------------------------------------------------
-void Quality::execute_JENS(vector<Point3D> &p, vector<Element *> &e)
+vector<int> Quality::generate_Histo(vector<Point3D> &p, vector<Element *> &e)
 {
 
+    vector<int> histo(22, 0);
     if (e.empty())
     {
         cout << "no elements\n";
-        return;
+        return histo;
     }
+    double worst = 2, total = 0;
+
+    vector<double> min_vals_type(4, 2), max_vals_type(4, -2), ave_vals_type(4, 0);
+    vector<unsigned int> ele_quantity(4, 0);
+
+    unsigned int type = 0;
+
+    for (int i = 0; i < (int)e.size(); i++)
+    {
+        double qua = e[i]->getElementJENS(p);
+        total += qua;
+        bool print = false;
+        if (worst > qua)
+            worst = qua;
+        if (qua < 0)
+        {
+            histo[0]++;
+            print = true;
+        }
+        else if (qua < 0.033333)
+        {
+            histo[1]++;
+            print = true;
+        }
+        else if (qua < 0.05)
+            histo[2]++;
+        else if (qua < 0.1)
+            histo[3]++;
+        else if (qua < 0.15)
+            histo[4]++;
+        else if (qua < 0.2)
+            histo[5]++;
+        else if (qua < 0.25)
+            histo[6]++;
+        else if (qua < 0.3)
+            histo[7]++;
+        else if (qua < 0.35)
+            histo[8]++;
+        else if (qua < 0.4)
+            histo[9]++;
+        else if (qua < 0.45)
+            histo[10]++;
+        else if (qua < 0.5)
+            histo[11]++;
+        else if (qua < 0.55)
+            histo[12]++;
+        else if (qua < 0.6)
+            histo[13]++;
+        else if (qua < 0.65)
+            histo[14]++;
+        else if (qua < 0.7)
+            histo[15]++;
+        else if (qua < 0.75)
+            histo[16]++;
+        else if (qua < 0.8)
+            histo[17]++;
+        else if (qua < 0.85)
+            histo[18]++;
+        else if (qua < 0.9)
+            histo[19]++;
+        else if (qua < 0.95)
+            histo[20]++;
+        else
+            histo[21]++;
+    }
+    
+    return histo;
+}
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+vector<int> Quality::execute_JENS(vector<Point3D> &p, vector<Element *> &e)
+{
+
     vector<int> histo(22, 0);
+    if (e.empty())
+    {
+        cout << "no elements\n";
+        return histo;
+    }
     double worst = 2, total = 0;
 
     vector<double> min_vals_type(4, 2), max_vals_type(4, -2), ave_vals_type(4, 0);
@@ -359,6 +437,7 @@ void Quality::execute_JENS(vector<Point3D> &p, vector<Element *> &e)
             cout << "no elements of this type\n";
         }
     }
+    return histo;
 }
 
 //--------------------------------------------------------------------------

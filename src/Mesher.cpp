@@ -19,6 +19,7 @@
 
 #include "Mesher.h"
 #include <math.h>
+#include "Jens/Quality.h"
 
 namespace Clobscode
 {
@@ -78,6 +79,7 @@ namespace Clobscode
         // problems. For this reason we will keep track of removed octants
         // so we can easily link elements to octant index when reading an oct
         // mesh.
+        // printStatus("START MAIN");
         map<unsigned int, bool> removedoct;
         list<unsigned int> octmeshidx;
         for (auto o : octants)
@@ -160,6 +162,8 @@ namespace Clobscode
         // problems. For this reason we will keep track of removed octants
         // so we can easily link elements to octant index when reading an oct
         // mesh.
+
+        // printStatus("START MAIN");
         map<unsigned int, bool> removedoct;
         list<unsigned int> octmeshidx;
         for (auto o : octants)
@@ -560,8 +564,12 @@ namespace Clobscode
                     }
                     // To mantain congruency in the map, we must erase all
                     // Octrants (index) that have been split due to balancing.
-                    auto delOct = idx_pos_map.find(key);
-                    idx_pos_map.erase(delOct);
+                    // auto delOct = idx_pos_map.find(key);
+                    // idx_pos_map.erase(delOct);
+
+                    std::map<unsigned int, unsigned int>::iterator delOct = idx_pos_map.find(key);
+                    if (delOct != idx_pos_map.end())
+                        idx_pos_map.erase(delOct);
                 }
             }
 
@@ -1068,12 +1076,15 @@ namespace Clobscode
     //--------------------------------------------------------------------------------
     //--------------------------------------------------------------------------------
 
+    // Actualiza el vector de Elements con los nuevos elementos
+    // Actualiza el vector de puntos con los nuevos puntos y elementos
     unsigned int Mesher::saveOutputMesh(FEMesh &mesh)
     {
 
         vector<Point3D> out_pts;
         vector<vector<unsigned int>> out_els;
         list<vector<unsigned int>> tmp_els;
+        vector<unsigned int> tmp_els_octs; // octantes a los que pertenece acada indice en tmp_els
 
         // new_idxs will hold the index of used nodes in the outside vector for points.
         // If the a node is not used by any element, its index will be 0 in this vector,
@@ -1108,6 +1119,7 @@ namespace Clobscode
                     }
                 }
                 tmp_els.push_back(sub_ele_new_idxs);
+                tmp_els_octs.push_back(octants[i].getIndex());
             }
         }
 
@@ -1127,8 +1139,21 @@ namespace Clobscode
             out_pts.push_back(*opi);
         }
 
+        // cout << "out_pts: " << out_pts.size() << " out_els: " << out_els.size() << "\n";
+
         mesh.setPoints(out_pts);
         mesh.setElements(out_els);
+        // mesh.setJensElements(out_els);
+        // JensTransformer jt;
+        for (int i = 0; i < out_els.size(); i++)
+        {
+            Element *elp = JensTransformer::transformElement(out_els[i], tmp_els_octs[i]);
+            mesh.addElementJens(elp);
+        }
+
+        Quality quality;
+        vector<int> histo = quality.generate_Histo(out_pts, (mesh.getElementsJens()));
+        mesh.setHisto(histo);
         return out_els.size();
     }
 

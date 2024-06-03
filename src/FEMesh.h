@@ -22,6 +22,7 @@
 
 #include <vector>
 #include "Point3D.h"
+#include "Jens/Element.h"
 
 using std::vector;
 
@@ -36,6 +37,8 @@ namespace Clobscode
 		virtual void setPoints(vector<Point3D> &pts);
 
 		virtual void setElements(vector<vector<unsigned int>> &els);
+
+		// virtual void setJensElements(vector<vector<unsigned int>> &els);
 
 		virtual void setOutsideNodes(list<unsigned int> &outpts);
 
@@ -62,6 +65,10 @@ namespace Clobscode
 
 		virtual const vector<unsigned short> &getDebugging() const;
 		virtual void setDebugging(const vector<unsigned short> &deb);
+		virtual vector<Element *> &getElementsJens() { return elementsJens; }
+		virtual void addElementJens(Element *el) { elementsJens.push_back(el); }
+		virtual void setHisto(vector<int> &hist);
+		virtual vector<int> &getHisto();
 
 	protected:
 		vector<Point3D> points;
@@ -71,8 +78,12 @@ namespace Clobscode
 		vector<unsigned short> ref_levels, surf_state, deb_state;
 		// vector <double> min_angles;
 		vector<unsigned int> color;
+		vector<Element *> elementsJens;
+		vector<int> histo;
 	};
 
+	inline void FEMesh::setHisto(vector<int> &hist) { histo = hist; }
+	inline vector<int> &FEMesh::getHisto() { return histo; }
 	inline const vector<unsigned short> &FEMesh::getRefLevels() const { return ref_levels; }
 	inline void FEMesh::setRefLevels(const vector<unsigned short> &rl) { ref_levels = rl; }
 
@@ -106,6 +117,19 @@ namespace Clobscode
 			elements.push_back(els[i]);
 		}
 	}
+
+	// inline void FEMesh::setJensElements(vector<vector<unsigned int>> &els)
+	// {
+	// 	unsigned int n = els.size();
+	// 	elementsJens.reserve(n);
+
+	// 	// JensTransformer jts;
+	// 	for (vector<unsigned int> &el : els)
+	// 	{
+	// 		Element *elp = JensTransformer::transformElement(el);
+	// 		elementsJens.push_back(elp);
+	// 	}
+	// }
 
 	inline void FEMesh::setPoints(vector<Point3D> &pts)
 	{

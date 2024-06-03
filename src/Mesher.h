@@ -74,6 +74,19 @@ namespace Clobscode
         virtual void setInitialState(vector<MeshPoint> &epts, vector<Octant> &eocts,
                                      map<OctreeEdge, EdgeInfo> &edge_map);
 
+        inline vector<MeshPoint> &getMeshPoints();
+        inline void printStatus(string msg)
+        {
+            cout << "STATUS MESHER : " << msg << endl;
+            cout << "\tPoints: " << points.size() << endl;
+            cout << "\tOctants: " << octants.size() << endl;
+            cout << "\tEdges: " << MapEdges.size() << endl;
+        };
+
+        vector<MeshPoint> points;
+        vector<Octant> octants;
+        map<OctreeEdge, EdgeInfo> MapEdges;
+
     protected:
         virtual void splitOctants(const unsigned short &rl, TriMesh &input,
                                   list<unsigned int> &roctli,
@@ -125,13 +138,17 @@ namespace Clobscode
         virtual void projectCloseToBoundaryNodes(TriMesh &input);
 
     protected:
-        vector<MeshPoint> points;
-        vector<Octant> octants;
-        map<OctreeEdge, EdgeInfo> MapEdges;
+        // vector<MeshPoint> points;
+        // vector<Octant> octants;
+        // map<OctreeEdge, EdgeInfo> MapEdges;
         list<RefinementRegion *> regions;
         list<unsigned int> deb;
     };
 
+    inline vector<MeshPoint> &Mesher::getMeshPoints()
+    {
+        return points;
+    }
     /*inline void Mesher::setInitialState(vector<MeshPoint> &epts, vector<Octant> &eocts,
                                         map<OctreeEdge, EdgeInfo> &edge_map) {
         octants = eocts;

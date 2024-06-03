@@ -48,13 +48,15 @@ public:
 
     virtual void execute_JS(vector<Point3D> &points, vector<Element *> &elements);
 
-    virtual void execute_JENS(vector<Point3D> &points, vector<Element *> &elements);
+    virtual vector<int> execute_JENS(vector<Point3D> &points, vector<Element *> &elements);
 
     virtual void execute_all(vector<Point3D> &points, vector<Element *> &elements);
 
     virtual void execute_allAR(vector<Point3D> &points, vector<Element *> &elements);
 
     virtual void execute_allJENS(vector<Point3D> &points, vector<Element *> &elements);
+
+    virtual vector<int> generate_Histo(vector<Point3D> &p, vector<Element *> &e);
 };
 
 #endif

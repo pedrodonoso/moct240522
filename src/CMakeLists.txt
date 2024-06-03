@@ -21,6 +21,7 @@ set(SOURCE_FILES Main MeshPoint Point3D TriMesh Octant OctreeEdge EdgeInfo
         Visitors/TransitionPatternVisitor Visitors/SurfaceTemplatesVisitor
         Visitors/RemoveSubElementsVisitor 
         Jens/Element Jens/Hexahedron Jens/Prism Jens/Pyramid Jens/Tetrahedron Jens/Quality
+        JensTransform/JensTransformer
         )
 
 

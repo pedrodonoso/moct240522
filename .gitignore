@@ -3,3 +3,8 @@ build/*
 *.oct
 *.vtk
 mesher_roi
+moct-01/*
+*.ref
+*.map
+*.histo
+*.pvsm

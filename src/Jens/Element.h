@@ -36,7 +36,9 @@
 #include <list>
 #include <math.h>
 #include "../Point3D.h"
+#include "../Octant.h"
 
+using Clobscode::Octant;
 using Clobscode::Point3D;
 
 using namespace std;
@@ -68,7 +70,9 @@ public:
     virtual char getCharType();
 
     friend std::ostream &operator<<(std::ostream &o, Element &e);
-    unsigned int octant_id;
+    // virtual Octant *getOctant() { return octant_id; }
+    // virtual void setOctant(Octant *oct) { octant_id = oct; }
+    Octant *octant; // octante al que pertenece el elemento
 
 protected:
     virtual vector<unsigned int> getTetra(int index) = 0;

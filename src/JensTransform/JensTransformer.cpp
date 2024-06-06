@@ -12,7 +12,7 @@ namespace Clobscode
         this->elementsJens = mesh.getElementsJens();
         this->meshPoints = mpts;
     }
-    
+
     // necesita elementsJens y meshPoints actualizados.
     set<unsigned int> JensTransformer::computeLabeledNodes(double threshold)
     {
@@ -32,17 +32,17 @@ namespace Clobscode
         {
             Element *element = elementsJens[i];
             double q = element->getElementJENS(points);
-
+            Octant o = *(element->octant);
+            int octant_id = o.getIndex();
             if (q < threshold)
             {
                 count++;
                 for (unsigned int node : element->getPoints())
                 {
                     ln.insert(node);
-                    mapPointOctant[node].insert(element->octant_id);
-                    // mapPointOctant[node].insert(i);
+                    mapPointOctant[node].insert(octant_id);
                 }
-                lo.insert(element->octant_id);
+                lo.insert(octant_id);
             }
         }
 

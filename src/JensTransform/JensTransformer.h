@@ -12,6 +12,7 @@
 #include "../Point3D.h"
 #include "../FEMesh.h"
 #include "../MeshPoint.h"
+#include "../Octant.h"
 #include <set>
 #include <map>
 
@@ -32,32 +33,32 @@ namespace Clobscode
 		map<unsigned int, set<unsigned int>> &getLabeledPtsToOcts();
 		void printStatus(string msg);
 
-		static Element *transformElement(vector<unsigned int> element, unsigned int oct_id)
+		static Element *transformElement(vector<unsigned int> element, Clobscode::Octant* oct)
 		{
 			vector<int> aux(element.begin(), element.end());
 			int n = element.size();
 			if (n == 4) // T
 			{
 				Tetrahedron *tet = new Tetrahedron(aux);
-				tet->octant_id = oct_id;
+				tet->octant = oct;
 				return tet;
 			}
 			else if (n == 5) // P
 			{
 				Pyramid *pyr = new Pyramid(aux);
-				pyr->octant_id = oct_id;
+				pyr->octant = oct;
 				return pyr;
 			}
 			else if (n == 6) // R
 			{
 				Prism *prism = new Prism(aux);
-				prism->octant_id = oct_id;
+				prism->octant = oct;
 				return prism;
 			}
 			else // H
 			{
 				Hexahedron *hex = new Hexahedron(aux);
-				hex->octant_id = oct_id;
+				hex->octant = oct;
 				return hex;
 			}
 		}

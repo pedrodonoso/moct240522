@@ -382,9 +382,9 @@ namespace Clobscode
         if (!roctli.empty())
         {
 
-            list<unsigned int>::iterator octidx = roctli.begin();
+            list<unsigned int>::iterator octidx = roctli.begin(); // id octante
 
-            unsigned int qua_pos = 0;
+            unsigned int qua_pos = 0; // candidates octant
             while (!candidates.empty())
             {
 
@@ -400,15 +400,20 @@ namespace Clobscode
                 {
                     // we advance to next Octrant in the list for the next
                     // iteration.
-                    octidx++;
+                    // octidx++;
+                    // refine_tmp.push_back(oct);
+                }
+                if (*octidx == oct.getIndex())
+                {
                     refine_tmp.push_back(oct);
+                    octidx++;
                 }
                 qua_pos++;
             }
 
             for (auto oct : refine_tmp)
             {
-
+                cout << "to refine oct: " << oct.getIndex();
                 // start refinement process for current Octant.
                 list<unsigned int> inter_faces = oct.getIntersectedFaces();
                 unsigned short orl = oct.getRefinementLevel();
@@ -426,6 +431,7 @@ namespace Clobscode
                 sv.setStartIndex(new_o_idx);
 
                 oct.accept(&sv);
+                cout << " new octs: ";
 
                 if (inter_faces.empty())
                 {
@@ -433,6 +439,7 @@ namespace Clobscode
                     {
                         Octant o(split_elements[j], orl + 1, new_o_idx++);
                         new_candidates.push_back(o);
+                        cout << "," << o.getIndex();
                     }
                 }
                 else
@@ -440,7 +447,7 @@ namespace Clobscode
                     for (unsigned int j = 0; j < split_elements.size(); j++)
                     {
                         Octant o(split_elements[j], orl + 1, new_o_idx++);
-
+                        cout << "," << o.getIndex();
                         // the new points are inserted in bash at the end of this
                         // iteration. For this reason, the coordinates must be passed
                         //"manually" at this point (clipping_coords).
@@ -481,6 +488,7 @@ namespace Clobscode
                         }
                     }
                 }
+                cout << endl;
             }
 
             // Erase the list to refine
@@ -1084,7 +1092,7 @@ namespace Clobscode
         vector<Point3D> out_pts;
         vector<vector<unsigned int>> out_els;
         list<vector<unsigned int>> tmp_els;
-        vector<unsigned int> tmp_els_octs; // octantes a los que pertenece acada indice en tmp_els
+        vector<Octant *> tmp_els_octs; // octantes a los que pertenece acada indice en tmp_els
 
         // new_idxs will hold the index of used nodes in the outside vector for points.
         // If the a node is not used by any element, its index will be 0 in this vector,
@@ -1119,7 +1127,7 @@ namespace Clobscode
                     }
                 }
                 tmp_els.push_back(sub_ele_new_idxs);
-                tmp_els_octs.push_back(octants[i].getIndex());
+                tmp_els_octs.push_back(&octants[i]);
             }
         }
 
@@ -1147,7 +1155,8 @@ namespace Clobscode
         // JensTransformer jt;
         for (int i = 0; i < out_els.size(); i++)
         {
-            Element *elp = JensTransformer::transformElement(out_els[i], tmp_els_octs[i]);
+            Octant *oct = tmp_els_octs[i];
+            Element *elp = JensTransformer::transformElement(out_els[i], oct);
             mesh.addElementJens(elp);
         }
 

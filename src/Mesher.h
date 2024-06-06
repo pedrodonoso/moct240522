@@ -75,6 +75,7 @@ namespace Clobscode
                                      map<OctreeEdge, EdgeInfo> &edge_map);
 
         inline vector<MeshPoint> &getMeshPoints();
+        inline vector<Octant> &getOctants() { return octants; };
         inline void printStatus(string msg)
         {
             cout << "STATUS MESHER : " << msg << endl;

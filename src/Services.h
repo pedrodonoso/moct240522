@@ -347,6 +347,12 @@ namespace Clobscode
                                    vector<unsigned int> &ele_oct_ref)
         {
             FILE *file = fopen(name.c_str(), "r");
+            cout << "Reading octant list from file " << name << "\n";
+            if (file == NULL)
+            {
+                std::cout << "File " << name << " doesn't exist\n";
+                return false;
+            }
             int idx = 0;
             char word[256];
             while (std::fscanf(file, "%s", word) != EOF)
@@ -363,6 +369,7 @@ namespace Clobscode
                 if (num)
                 {
                     idx = atoi(word);
+                    cout << "idx: " << idx << "\n";
                     if (ele_oct_ref.size() <= idx)
                     {
                         cerr << "Invalid element index while reading list of elements to refine\n";
@@ -372,7 +379,8 @@ namespace Clobscode
                         abort();
                     }
 
-                    olist.push_back(ele_oct_ref[idx]);
+                    olist.push_back(idx);
+                    // olist.push_back(ele_oct_ref[idx]);
                 }
             }
             olist.sort();
@@ -438,6 +446,10 @@ namespace Clobscode
 
             // read the octants, its refinement level and
             // the input faces intersected by it.
+            // 8 72104 72112 72110 72099 72101 72111 72109 27703 7
+            // 8: number of nodes
+            // 72104 72112 72110 72099 72101 72111 72109 27703: nodes
+            // 7: refinement level
             octants.reserve(no);
             int nop = 0, nof = 0, orl = 0, ni = 0;
 
@@ -466,14 +478,16 @@ namespace Clobscode
                     std::fscanf(file, "%u", &ni);
                     opts.push_back(ni);
                 }
+                int o_index;
                 std::fscanf(file, "%u", &orl);
+                std::fscanf(file, "%u", &o_index);
                 std::fscanf(file, "%u", &nof);
                 for (unsigned int j = 0; j < nof; j++)
                 {
                     std::fscanf(file, "%u", &ni);
                     ofcs.push_back(ni);
                 }
-                Octant octant(opts, orl, i);
+                Octant octant(opts, orl, o_index);
                 octant.setIntersectedFaces(ofcs);
                 octants.push_back(octant);
 
@@ -570,7 +584,6 @@ namespace Clobscode
                 fprintf(f,"%u ",nse);
             }
             fprintf(f,"\n\n");*/
-
             for (unsigned int i = 0; i < octants.size(); i++)
             {
                 vector<unsigned int> opts = octants[i].getPoints();
@@ -590,7 +603,8 @@ namespace Clobscode
                 {
                     fprintf(f, "%u ", opts[j]);
                 }
-                fprintf(f, "%u\n", octants[i].getRefinementLevel());
+                fprintf(f, "%u ", octants[i].getRefinementLevel());
+                fprintf(f, "%u\n", octants[i].getIndex());
                 list<unsigned int> ofcs = octants[i].getIntersectedFaces();
                 list<unsigned int>::iterator fiter;
                 nopts = ofcs.size();
@@ -601,6 +615,7 @@ namespace Clobscode
                 }
                 fprintf(f, "\n");
             }
+            cout << endl;
 
             fprintf(f, "\nGeometric Transform\n");
             Point3D c = gt.getCentroid();

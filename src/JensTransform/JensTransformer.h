@@ -24,7 +24,7 @@ namespace Clobscode
 	{
 
 	public:
-		JensTransformer(FEMesh &mesh, vector<MeshPoint> &mpts);
+		JensTransformer(FEMesh &mesh);
 		// vector<Element *> transformElements();
 		// Element *transformElement(vector<unsigned int> element);
 		set<unsigned int> computeLabeledNodes(double threshold);
@@ -65,7 +65,6 @@ namespace Clobscode
 
 	protected:
 		vector<Point3D> points;
-		vector<MeshPoint> meshPoints;
 		// vector<vector<unsigned int>> elements;
 		vector<Element *> elementsJens;
 		set<unsigned int> labeledNodes;
@@ -80,7 +79,6 @@ namespace Clobscode
 	{
 		cout << "STATUS JENSTRANSFORMER: " << msg << endl;
 		cout << "\tPoints: " << points.size() << endl;
-		cout << "\tMeshPoints: " << (meshPoints).size() << endl;
 		cout << "\tElementsJens: " << elementsJens.size() << endl;
 		cout << "\tLabeledNodes: " << labeledNodes.size() << endl;
 		cout << "\tOctants Labeled: " << labeledOctants.size() << endl;

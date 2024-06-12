@@ -336,7 +336,7 @@ int main(int argc, char **argv)
     // if (it == 0)
     //     octant_start = true;
 
-    JensTransformer jt(output, mesher.getMeshPoints());
+    JensTransformer jt(output);
     // jt.printStatus("START MAIN");
     jt.computeLabeledNodes(threshold);
     set<unsigned int> lo = jt.getLabeledOctants();

@@ -348,7 +348,7 @@ namespace Clobscode
                           make_move_iterator(octants.end()));
 
         // The starting point for assignaiting indexes
-        unsigned int new_o_idx = candidates.size();
+        unsigned int new_o_idx = 0;
 
         // Erase previous Octrants to save memory
         octants.erase(octants.begin(), octants.end());
@@ -391,29 +391,26 @@ namespace Clobscode
                 Octant oct = *(candidates.begin());
                 candidates.pop_front();
 
-                if (octidx == roctli.end() || qua_pos != *octidx)
-                {
-                    idx_pos_map[oct.getIndex()] = processed.size();
-                    processed.push_back(oct);
-                }
-                else
+                if (oct.getIndex() >= new_o_idx) // update new index
+                    new_o_idx = oct.getIndex() + 1;
+
+                if (*octidx == oct.getIndex() && octidx != roctli.end()) // check if octant is in the list
                 {
                     // we advance to next Octrant in the list for the next
                     // iteration.
-                    // octidx++;
-                    // refine_tmp.push_back(oct);
-                }
-                if (*octidx == oct.getIndex())
-                {
                     refine_tmp.push_back(oct);
                     octidx++;
+                }
+                else
+                {
+                    idx_pos_map[oct.getIndex()] = processed.size();
+                    processed.push_back(oct);
                 }
                 qua_pos++;
             }
 
             for (auto oct : refine_tmp)
             {
-                cout << "to refine oct: " << oct.getIndex();
                 // start refinement process for current Octant.
                 list<unsigned int> inter_faces = oct.getIntersectedFaces();
                 unsigned short orl = oct.getRefinementLevel();
@@ -431,7 +428,6 @@ namespace Clobscode
                 sv.setStartIndex(new_o_idx);
 
                 oct.accept(&sv);
-                cout << " new octs: ";
 
                 if (inter_faces.empty())
                 {
@@ -439,7 +435,6 @@ namespace Clobscode
                     {
                         Octant o(split_elements[j], orl + 1, new_o_idx++);
                         new_candidates.push_back(o);
-                        cout << "," << o.getIndex();
                     }
                 }
                 else
@@ -447,7 +442,6 @@ namespace Clobscode
                     for (unsigned int j = 0; j < split_elements.size(); j++)
                     {
                         Octant o(split_elements[j], orl + 1, new_o_idx++);
-                        cout << "," << o.getIndex();
                         // the new points are inserted in bash at the end of this
                         // iteration. For this reason, the coordinates must be passed
                         //"manually" at this point (clipping_coords).
@@ -488,7 +482,6 @@ namespace Clobscode
                         }
                     }
                 }
-                cout << endl;
             }
 
             // Erase the list to refine
@@ -661,6 +654,7 @@ namespace Clobscode
 
         // If there are more refinement regions now treat them
         if (!all_reg.empty())
+        // if (true)
         {
             generateOctreeMesh(rl, input, all_reg, name, minrl, givenmaxrl);
         }
@@ -698,7 +692,8 @@ namespace Clobscode
                           make_move_iterator(octants.end()));
 
         // The starting point for assignaiting indexes
-        unsigned int new_o_idx = candidates.size();
+        // unsigned int new_o_idx = candidates.size();
+        unsigned int new_o_idx = 0;
 
         // Erase previous Octrants to save memory
         octants.clear();
@@ -745,6 +740,9 @@ namespace Clobscode
             {
                 Octant oct = *(candidates.begin());
                 candidates.pop_front();
+
+                if (oct.getIndex() >= new_o_idx)
+                    new_o_idx = oct.getIndex() + 1;
 
                 bool to_refine = false;
 
@@ -1092,7 +1090,8 @@ namespace Clobscode
         vector<Point3D> out_pts;
         vector<vector<unsigned int>> out_els;
         list<vector<unsigned int>> tmp_els;
-        vector<Octant *> tmp_els_octs; // octantes a los que pertenece acada indice en tmp_els
+        vector<Octant *> tmp_els_octs;    // octantes a los que pertenece acada indice en tmp_els
+        vector<unsigned int> tmp_els_idx; // indice de octante en octants
 
         // new_idxs will hold the index of used nodes in the outside vector for points.
         // If the a node is not used by any element, its index will be 0 in this vector,
@@ -1128,6 +1127,7 @@ namespace Clobscode
                 }
                 tmp_els.push_back(sub_ele_new_idxs);
                 tmp_els_octs.push_back(&octants[i]);
+                tmp_els_idx.push_back(i);
             }
         }
 
@@ -1155,8 +1155,7 @@ namespace Clobscode
         // JensTransformer jt;
         for (int i = 0; i < out_els.size(); i++)
         {
-            Octant *oct = tmp_els_octs[i];
-            Element *elp = JensTransformer::transformElement(out_els[i], oct);
+            Element *elp = JensTransformer::transformElement(out_els[i], tmp_els_octs[i]);
             mesh.addElementJens(elp);
         }
 

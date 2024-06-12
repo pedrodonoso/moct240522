@@ -369,7 +369,6 @@ namespace Clobscode
                 if (num)
                 {
                     idx = atoi(word);
-                    cout << "idx: " << idx << "\n";
                     if (ele_oct_ref.size() <= idx)
                     {
                         cerr << "Invalid element index while reading list of elements to refine\n";
@@ -615,7 +614,6 @@ namespace Clobscode
                 }
                 fprintf(f, "\n");
             }
-            cout << endl;
 
             fprintf(f, "\nGeometric Transform\n");
             Point3D c = gt.getCentroid();

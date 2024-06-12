@@ -62,6 +62,10 @@ namespace Clobscode
 
         virtual ~Mesher();
 
+        // virtual void genMesh(TriMesh &input);
+
+        // virtual void refineOctants(SplitVisitor &sv, unsigned int &new_o_idx, TriMesh &input, list<pair<unsigned int, unsigned int>> &toBalance, map<unsigned int, unsigned int> &idx_pos_map, vector<Octant> &processed, list<Point3D> &new_pts, list<Octant> &refine_tmp, list<Octant> &new_candidates, list<Octant> &clean_processed, list<Octant> &candidates, unsigned short &max_rl, bool &localmax);
+
         virtual FEMesh generateMesh(TriMesh &input, const unsigned short &rl,
                                     const string &name, list<RefinementRegion *> &all_reg);
 
@@ -74,7 +78,6 @@ namespace Clobscode
         virtual void setInitialState(vector<MeshPoint> &epts, vector<Octant> &eocts,
                                      map<OctreeEdge, EdgeInfo> &edge_map);
 
-        inline vector<MeshPoint> &getMeshPoints();
         inline vector<Octant> &getOctants() { return octants; };
         inline void printStatus(string msg)
         {
@@ -146,10 +149,6 @@ namespace Clobscode
         list<unsigned int> deb;
     };
 
-    inline vector<MeshPoint> &Mesher::getMeshPoints()
-    {
-        return points;
-    }
     /*inline void Mesher::setInitialState(vector<MeshPoint> &epts, vector<Octant> &eocts,
                                         map<OctreeEdge, EdgeInfo> &edge_map) {
         octants = eocts;

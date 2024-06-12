@@ -38,7 +38,7 @@ namespace Clobscode
 
 		virtual void setElements(vector<vector<unsigned int>> &els);
 
-		// virtual void setJensElements(vector<vector<unsigned int>> &els);
+		virtual void setElementsJens(vector<Element *> &els);
 
 		virtual void setOutsideNodes(list<unsigned int> &outpts);
 
@@ -118,18 +118,14 @@ namespace Clobscode
 		}
 	}
 
-	// inline void FEMesh::setJensElements(vector<vector<unsigned int>> &els)
-	// {
-	// 	unsigned int n = els.size();
-	// 	elementsJens.reserve(n);
+	inline void FEMesh::setElementsJens(vector<Element *> &els)
+	{
+		unsigned int n = els.size();
+		elementsJens.reserve(n);
 
-	// 	// JensTransformer jts;
-	// 	for (vector<unsigned int> &el : els)
-	// 	{
-	// 		Element *elp = JensTransformer::transformElement(el);
-	// 		elementsJens.push_back(elp);
-	// 	}
-	// }
+		for (Element *el : els)
+			elementsJens.push_back(el);
+	}
 
 	inline void FEMesh::setPoints(vector<Point3D> &pts)
 	{

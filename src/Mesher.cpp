@@ -1151,16 +1151,18 @@ namespace Clobscode
 
         mesh.setPoints(out_pts);
         mesh.setElements(out_els);
-        // mesh.setJensElements(out_els);
-        // JensTransformer jt;
+
+        vector<Element*> out_els_jens;
         for (int i = 0; i < out_els.size(); i++)
         {
             Element *elp = JensTransformer::transformElement(out_els[i], tmp_els_octs[i]);
-            mesh.addElementJens(elp);
+            out_els_jens.push_back(elp);
+
         }
+        mesh.setElementsJens(out_els_jens);
 
         Quality quality;
-        vector<int> histo = quality.generate_Histo(out_pts, (mesh.getElementsJens()));
+        vector<int> histo = quality.generate_Histo(out_pts, out_els_jens);
         mesh.setHisto(histo);
         return out_els.size();
     }

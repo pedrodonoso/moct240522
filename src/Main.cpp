@@ -310,16 +310,12 @@ int main(int argc, char **argv)
     Clobscode::Mesher mesher;
     Clobscode::FEMesh output;
 
-    // mesher.printStatus("START MAIN");
     if (!octant_start)
     {
-        // cout << "START MESH GENERATION\n";
         output = mesher.generateMesh(inputs.at(0), ref_level, out_name, all_regions);
     }
     else
     {
-        // cout << "START REFINEMENT\n";
-
         mesher.setInitialState(oct_points, oct_octants, edge_map);
         if (omaxrl < ref_level)
         {
@@ -329,33 +325,11 @@ int main(int argc, char **argv)
         output = mesher.refineMesh(inputs.at(0), ref_level, out_name, roctli,
                                    all_regions, gt, cminrl, omaxrl);
     }
-    // oct_points = (mesher.points);
-    // oct_octants = (mesher.octants);
-    // edge_map = (mesher.MapEdges);
-
-    // if (it == 0)
-    //     octant_start = true;
 
     JensTransformer jt(output);
-    // jt.printStatus("START MAIN");
     jt.computeLabeledNodes(threshold);
     set<unsigned int> lo = jt.getLabeledOctants();
     map<unsigned int, set<unsigned int>> ptsToOcts = jt.getLabeledPtsToOcts();
-    // jt.printStatus("FIN MAIN");
-
-    // list<unsigned int> aux;
-
-    // cout << "IT: " << it << " ROCTLI: " << roctli.size() << endl;
-    // // rellenar
-    // for (unsigned int i : lo)
-    // {
-    //     aux.push_back(i);
-    // }
-    // roctli.assign(make_move_iterator(aux.begin()), make_move_iterator(aux.end()));
-    // aux.erase(aux.begin(), aux.end());
-    // cout << "IT: " << it << " ROCTLI: " << roctli.size() << endl;
-
-    // mesher.printStatus("FIN MAIN");
     vector<int> histo = output.getHisto();
 
     Services::WriteOctToRefine(out_name, lo);

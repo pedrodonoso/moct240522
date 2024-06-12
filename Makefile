@@ -15,7 +15,7 @@ install:
 .PHONY: build-moct
 build-moct: 
 	rm -rf ./${program_name}
-	cmake -DCMAKE_BUILD_TYPE=Debug -B build/ -S src/ && make -C build/ && cp build/${program_name} ./
+	cmake -DCMAKE_BUILD_TYPE=Debug -Wno-dev -B build/ -S src/ && make -C build/ && cp build/${program_name} ./
 
 .PHONY: run-moct
 run-moct:
